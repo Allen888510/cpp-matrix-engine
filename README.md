@@ -1,8 +1,6 @@
-# cpp-matrix-engine
-A C++ matrix computation engine built from scratch for learning high-performance computing and AI acceleration.
 # C++ Matrix Engine
 
-A matrix computation engine implemented from scratch in C++.
+A C++ matrix computation engine built from scratch for learning high-performance computing and AI acceleration.
 
 ## Goals
 
