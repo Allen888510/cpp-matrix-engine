@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <stdexcept>
 #include "matrix.hpp"
 
 int main()
@@ -25,5 +25,14 @@ int main()
               << A(1, 1) << " "
               << A(1, 2) << std::endl;
 
+    try
+    {
+        std::cout << A(10, 10) << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cout << "Caught error: " << e.what() << std::endl;
+    }
     return 0;
 }
+
