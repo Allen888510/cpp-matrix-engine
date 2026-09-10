@@ -41,14 +41,28 @@ Matrix Matrix::operator+(const Matrix& other) const
 {
     if (rows_ != other.rows_ || cols_ != other.cols_)
     {
-        throw std::invalid_argument("Matrix dimensions must match for addition");
+        throw std::invalid_argument("Matrix dimensions must match");
     }
 
     Matrix result(rows_, cols_);
-    for(std::size_t i = 0; i < data_.size(); ++i)
+    for (std::size_t i = 0; i < data_.size(); ++i)
     {
         result.data_[i] = data_[i] + other.data_[i];
     }
     return result;
 }
     
+Matrix Matrix::operator-(const Matrix& other) const
+{
+    if (rows_ != other.rows_ || cols_ != other.cols_)
+    {
+        throw std::invalid_argument("Matrix dimensions must match");
+    }
+
+    Matrix result(rows_, cols_);
+    for (std::size_t i = 0; i < data_.size(); ++i)
+    {
+        result.data_[i] = data_[i] - other.data_[i];
+    }
+    return result;
+}
