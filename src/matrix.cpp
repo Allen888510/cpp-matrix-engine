@@ -37,12 +37,18 @@ std::size_t Matrix::cols() const
     return cols_;
 }
 
-Matrix Matrix::operator+(const Matrix& other) const
+void Matrix::validate_same_shape(const Matrix& other) const
 {
     if (rows_ != other.rows_ || cols_ != other.cols_)
     {
         throw std::invalid_argument("Matrix dimensions must match");
     }
+}
+
+Matrix Matrix::operator+(const Matrix& other) const
+{
+    validate_same_shape(other);
+
 
     Matrix result(rows_, cols_);
     for (std::size_t i = 0; i < data_.size(); ++i)
@@ -54,10 +60,7 @@ Matrix Matrix::operator+(const Matrix& other) const
     
 Matrix Matrix::operator-(const Matrix& other) const
 {
-    if (rows_ != other.rows_ || cols_ != other.cols_)
-    {
-        throw std::invalid_argument("Matrix dimensions must match");
-    }
+    validate_same_shape(other);
 
     Matrix result(rows_, cols_);
     for (std::size_t i = 0; i < data_.size(); ++i)
