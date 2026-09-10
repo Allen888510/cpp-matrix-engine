@@ -1,13 +1,11 @@
 #include <iostream>
 #include <stdexcept>
+
 #include "matrix.hpp"
 
 int main()
 {
     Matrix A(2, 3);
-
-    std::cout << "Rows: " << A.rows() << std::endl;
-    std::cout << "Cols: " << A.cols() << std::endl;
 
     A(0, 0) = 1.0f;
     A(0, 1) = 2.0f;
@@ -17,22 +15,53 @@ int main()
     A(1, 1) = 5.0f;
     A(1, 2) = 6.0f;
 
-    std::cout << A(0, 0) << " "
-              << A(0, 1) << " "
-              << A(0, 2) << std::endl;
 
-    std::cout << A(1, 0) << " "
-              << A(1, 1) << " "
-              << A(1, 2) << std::endl;
+    Matrix B(2, 3);
+    B(0, 0) = 7.0f;
+    B(0, 1) = 8.0f;
+    B(0, 2) = 9.0f;
 
-    try
+    B(1, 0) = 10.0f;
+    B(1, 1) = 11.0f;
+    B(1, 2) = 12.0f;
+
+    Matrix C(3, 2); // This will cause an error when trying to add A and C;
+    C(0, 0) = 1.0f;
+    C(0, 1) = 2.0f;
+    C(1, 0) = 3.0f;
+    C(1, 1) = 4.0f;
+    C(2, 0) = 5.0f;
+    C(2, 1) = 6.0f;
+    
+
+    Matrix D = A + B;
+
+    std::cout << "Result of A + B:" << std::endl;
+    for (std::size_t i = 0; i < D.rows(); ++i)
     {
-        std::cout << A(10, 10) << std::endl;
+       for (std::size_t j = 0; j < D.cols(); ++j)
+        {
+            std::cout << D(i, j) << " ";
+        }
+        std::cout << std::endl;
     }
-    catch (const std::out_of_range& e)
+
+    try{
+        Matrix E = A + C;
+
+        std::cout << "Result of A + C:" << std::endl;
+        for (std::size_t i = 0; i < E.rows(); ++i)
+        {
+            for (std::size_t j = 0; j < E.cols(); ++j)
+            {
+                std::cout << E(i, j) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+    catch (const std::invalid_argument& e)
     {
         std::cout << "Caught error: " << e.what() << std::endl;
     }
-    return 0;
 }
 
