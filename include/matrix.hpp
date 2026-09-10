@@ -25,4 +25,3 @@ public:
     Matrix operator-(const Matrix& other) const;
 };
 
-
