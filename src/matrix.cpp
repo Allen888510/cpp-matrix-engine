@@ -45,7 +45,6 @@ void Matrix::validate_same_shape(const Matrix& other) const
     }
 }
 
-
 Matrix Matrix::operator+(const Matrix& other) const
 {
     validate_same_shape(other);
