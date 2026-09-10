@@ -46,7 +46,8 @@ int main()
         std::cout << std::endl;
     }
 
-    try{
+    try
+    {
         Matrix E = A + C;
 
         std::cout << "Result of A + C:" << std::endl;
