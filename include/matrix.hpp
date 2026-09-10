@@ -18,6 +18,8 @@ public:
 
     std::size_t rows() const;
     std::size_t cols() const;
+    
+    Matrix operator+(const Matrix& other) const;
 };
 
 
