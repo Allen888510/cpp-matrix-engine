@@ -20,6 +20,7 @@ public:
     std::size_t cols() const;
     
     Matrix operator+(const Matrix& other) const;
+    Matrix operator-(const Matrix& other) const;
 };
 
 
