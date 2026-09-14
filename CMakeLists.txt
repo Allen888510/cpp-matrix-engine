@@ -26,11 +26,6 @@ target_link_libraries(matrix_engine
 
 enable_testing()
 
-add_test(
-    NAME matrix_tests
-    COMMAND matrix_tests
-)
-
 add_executable(matrix_tests
     tests/test_matrix.cpp
 )
@@ -38,5 +33,21 @@ add_executable(matrix_tests
 target_link_libraries(matrix_tests
     PRIVATE
         matrix
+        GTest::gtest_main
 )
 
+include(GoogleTest)
+
+gtest_discover_tests(matrix_tests)
+
+
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
