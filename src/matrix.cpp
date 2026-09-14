@@ -69,3 +69,13 @@ Matrix Matrix::operator-(const Matrix& other) const
     }
     return result;
 }
+
+Matrix Matrix::operator*(float scalar) const
+{
+    Matrix result(rows_, cols_);
+    for (std::size_t i = 0; i < data_.size(); ++i)
+    {
+        result.data_[i] = data_[i] * scalar;
+    }
+    return result;
+}
