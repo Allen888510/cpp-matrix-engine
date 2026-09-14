@@ -92,3 +92,26 @@ Matrix Matrix::transpose() const
     }
     return result;
 }
+
+Matrix Matrix::operator*(const Matrix& other) const
+{
+    if (cols_ != other.rows_)
+    {
+        throw std::invalid_argument("Matrix dimensions are not compatible for multiplication");
+    }
+
+    Matrix result(rows_, other.cols_);
+    for (std::size_t i = 0; i < rows_; ++i)
+    {
+        for (std::size_t j = 0; j < other.cols_; ++j)
+        {
+            float sum = 0.0f;
+            for (std::size_t k = 0; k < cols_; ++k)
+            {
+                sum += (*this)(i, k) * other(k, j);
+            }
+            result(i, j) = sum;
+        }
+    }
+    return result;
+}
