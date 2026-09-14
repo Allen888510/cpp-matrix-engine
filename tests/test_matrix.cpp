@@ -164,5 +164,5 @@ int main()
               << failed << " failed"
               << std::endl;
 
-    return failed == 0 ? 0 : 1; //0 → success, non-zero → failure
+    return failed == 0 ? 0 : 1; // 0 = success, non-zero = failure
 }
