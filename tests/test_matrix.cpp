@@ -145,3 +145,73 @@ TEST(MatrixTest, ScalarMultiplicationByZero)
     EXPECT_FLOAT_EQ(result(0, 0), 0.0f);
     EXPECT_FLOAT_EQ(result(0, 1), 0.0f);
 }
+
+TEST(MatrixTest, TransposeRectangular)
+{
+    Matrix matrix(2, 3);
+
+    matrix(0, 0) = 1.0f;
+    matrix(0, 1) = 2.0f;
+    matrix(0, 2) = 3.0f;
+
+    matrix(1, 0) = 4.0f;
+    matrix(1, 1) = 5.0f;
+    matrix(1, 2) = 6.0f;
+
+    Matrix result = matrix.transpose();
+
+    EXPECT_EQ(result.rows(), 3);
+    EXPECT_EQ(result.cols(), 2);
+
+    EXPECT_FLOAT_EQ(result(0, 0), 1.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 4.0f);
+
+    EXPECT_FLOAT_EQ(result(1, 0), 2.0f);
+    EXPECT_FLOAT_EQ(result(1, 1), 5.0f);
+
+    EXPECT_FLOAT_EQ(result(2, 0), 3.0f);
+    EXPECT_FLOAT_EQ(result(2, 1), 6.0f);
+}
+
+TEST(MatrixTest, TransposeSquare)
+{
+    Matrix matrix(2, 2);
+
+    matrix(0, 0) = 1.0f;
+    matrix(0, 1) = 2.0f;
+    matrix(1, 0) = 3.0f;
+    matrix(1, 1) = 4.0f;
+
+    Matrix result = matrix.transpose();
+
+    EXPECT_FLOAT_EQ(result(0, 0), 1.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 3.0f);
+    EXPECT_FLOAT_EQ(result(1, 0), 2.0f);
+    EXPECT_FLOAT_EQ(result(1, 1), 4.0f);
+}
+
+TEST(MatrixTest, DoubleTransposeReturnsOriginal)
+{
+    Matrix matrix(2, 3);
+
+    matrix(0, 0) = 1.0f;
+    matrix(0, 1) = 2.0f;
+    matrix(0, 2) = 3.0f;
+
+    matrix(1, 0) = 4.0f;
+    matrix(1, 1) = 5.0f;
+    matrix(1, 2) = 6.0f;
+
+    Matrix result = matrix.transpose().transpose();
+
+    EXPECT_EQ(result.rows(), matrix.rows());
+    EXPECT_EQ(result.cols(), matrix.cols());
+
+    for (std::size_t row = 0; row < matrix.rows(); ++row)
+    {
+        for (std::size_t col = 0; col < matrix.cols(); ++col)
+        {
+            EXPECT_FLOAT_EQ(result(row, col), matrix(row, col));
+        }
+    }
+}

@@ -79,3 +79,16 @@ Matrix Matrix::operator*(float scalar) const
     }
     return result;
 }
+
+Matrix Matrix::transpose() const
+{
+    Matrix result(cols_, rows_);
+    for (std::size_t i = 0; i < rows_; ++i)
+    {
+        for (std::size_t j = 0; j < cols_; ++j)
+        {
+            result(j, i) = (*this)(i, j);
+        }
+    }
+    return result;
+}
