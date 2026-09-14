@@ -215,3 +215,67 @@ TEST(MatrixTest, DoubleTransposeReturnsOriginal)
         }
     }
 }
+
+TEST(MatrixTest, MatrixMultiplication)
+{
+    Matrix A(2, 3);
+    Matrix B(3, 2);
+
+    A(0, 0) = 1.0f;
+    A(0, 1) = 2.0f;
+    A(0, 2) = 3.0f;
+    A(1, 0) = 4.0f;
+    A(1, 1) = 5.0f;
+    A(1, 2) = 6.0f;
+
+    B(0, 0) = 7.0f;
+    B(0, 1) = 8.0f;
+    B(1, 0) = 9.0f;
+    B(1, 1) = 10.0f;
+    B(2, 0) = 11.0f;
+    B(2, 1) = 12.0f;
+
+    Matrix result = A * B;
+
+    EXPECT_EQ(result.rows(), 2);
+    EXPECT_EQ(result.cols(), 2);
+
+    EXPECT_FLOAT_EQ(result(0, 0), 58.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 64.0f);
+    EXPECT_FLOAT_EQ(result(1, 0), 139.0f);
+    EXPECT_FLOAT_EQ(result(1, 1), 154.0f);
+}
+
+TEST(MatrixTest, MatrixMultiplicationDimensionMismatch)
+{
+    Matrix A(2, 3);
+    Matrix B(2, 2);
+
+    EXPECT_THROW(
+        A * B,
+        std::invalid_argument
+    );
+}
+
+TEST(MatrixTest, MatrixMultiplicationByIdentity)
+{
+    Matrix A(2, 2);
+
+    A(0, 0) = 1.0f;
+    A(0, 1) = 2.0f;
+    A(1, 0) = 3.0f;
+    A(1, 1) = 4.0f;
+
+    Matrix I(2, 2);
+
+    I(0, 0) = 1.0f;
+    I(1, 1) = 1.0f;
+
+    Matrix result = A * I;
+
+    EXPECT_FLOAT_EQ(result(0, 0), 1.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 2.0f);
+    EXPECT_FLOAT_EQ(result(1, 0), 3.0f);
+    EXPECT_FLOAT_EQ(result(1, 1), 4.0f);
+}
+
