@@ -103,3 +103,45 @@ TEST(MatrixTest, OutOfRangeAccess)
         std::out_of_range
     );
 }
+
+TEST(MatrixTest, ScalarMultiplication)
+{
+    Matrix matrix(1, 2);
+
+    matrix(0, 0) = 1.0f;
+    matrix(0, 1) = 2.0f;
+
+    Matrix result = matrix * 3.0f;
+
+    EXPECT_FLOAT_EQ(result(0, 0), 3.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 6.0f);
+
+    EXPECT_FLOAT_EQ(matrix(0, 0), 1.0f);
+    EXPECT_FLOAT_EQ(matrix(0, 1), 2.0f);
+}
+
+TEST(MatrixTest, ScalarMultiplicationNegative)
+{
+    Matrix matrix(1, 2);
+
+    matrix(0, 0) = 1.0f;
+    matrix(0, 1) = -2.0f;
+
+    Matrix result = matrix * -2.0f;
+
+    EXPECT_FLOAT_EQ(result(0, 0), -2.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 4.0f);
+}
+
+TEST(MatrixTest, ScalarMultiplicationByZero)
+{
+    Matrix matrix(1, 2);
+
+    matrix(0, 0) = 5.0f;
+    matrix(0, 1) = -3.0f;
+
+    Matrix result = matrix * 0.0f;
+
+    EXPECT_FLOAT_EQ(result(0, 0), 0.0f);
+    EXPECT_FLOAT_EQ(result(0, 1), 0.0f);
+}
