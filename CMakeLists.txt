@@ -51,3 +51,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
+
+add_executable(matrix_benchmark
+    benchmarks/benchmark_matrix.cpp
+)
+
+target_link_libraries(matrix_benchmark
+    PRIVATE
+        matrix
+)
