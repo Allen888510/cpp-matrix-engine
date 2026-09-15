@@ -97,20 +97,24 @@ Matrix Matrix::operator*(const Matrix& other) const
 {
     if (cols_ != other.rows_)
     {
-        throw std::invalid_argument("Matrix dimensions are not compatible for multiplication");
+        throw std::invalid_argument(
+            "Matrix dimensions are not compatible for multiplication"
+        );
     }
 
     Matrix result(rows_, other.cols_);
+
     for (std::size_t i = 0; i < rows_; ++i)
     {
-        for (std::size_t j = 0; j < other.cols_; ++j)
+        for (std::size_t k = 0; k < cols_; ++k)
         {
-            float sum = 0.0f;
-            for (std::size_t k = 0; k < cols_; ++k)
+            const float a = data_[i * cols_ + k];
+
+            for (std::size_t j = 0; j < other.cols_; ++j)
             {
-                sum += (*this)(i, k) * other(k, j);
+                result.data_[i * other.cols_ + j] +=
+                    a * other.data_[k * other.cols_ + j];
             }
-            result(i, j) = sum;
         }
     }
     return result;
