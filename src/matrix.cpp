@@ -1,6 +1,7 @@
 #include "matrix.hpp"
 
 #include <stdexcept>
+#include<algorithm>
 
 Matrix::Matrix(std::size_t rows, std::size_t cols)
     : rows_(rows),
@@ -102,18 +103,37 @@ Matrix Matrix::operator*(const Matrix& other) const
         );
     }
 
+    constexpr std::size_t BLOCK_SIZE = 128;
+
     Matrix result(rows_, other.cols_);
 
-    for (std::size_t i = 0; i < rows_; ++i)
+    for (std::size_t ii = 0; ii < rows_; ii += BLOCK_SIZE)
     {
-        for (std::size_t k = 0; k < cols_; ++k)
+        for (std::size_t kk = 0; kk < cols_; kk += BLOCK_SIZE)
         {
-            const float a = data_[i * cols_ + k];
-
-            for (std::size_t j = 0; j < other.cols_; ++j)
+            for (std::size_t jj = 0; jj < other.cols_; jj += BLOCK_SIZE)
             {
-                result.data_[i * other.cols_ + j] +=
-                    a * other.data_[k * other.cols_ + j];
+                const std::size_t i_end =
+                    std::min(ii + BLOCK_SIZE, rows_);
+
+                const std::size_t k_end =
+                    std::min(kk + BLOCK_SIZE, cols_);
+
+                const std::size_t j_end =
+                    std::min(jj + BLOCK_SIZE, other.cols_);
+                
+                for (std::size_t i = ii; i < i_end; ++i)
+                {
+                    for (std::size_t k = kk; k < k_end; ++k)
+                    {
+                        const float a = data_[i * cols_ + k];
+
+                        for (std::size_t j = jj; j < j_end; ++j)
+                        {
+                            result.data_[i * other.cols_ + j] += a * other.data_[k * other.cols_ + j];
+                        }
+                    }
+                } 
             }
         }
     }
