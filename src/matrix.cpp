@@ -127,10 +127,18 @@ Matrix Matrix::operator*(const Matrix& other) const
                     for (std::size_t k = kk; k < k_end; ++k)
                     {
                         const float a = data_[i * cols_ + k];
+                        const std::size_t result_row = i * other.cols_;
+                        const std::size_t other_row = k * other.cols_;
 
-                        for (std::size_t j = jj; j < j_end; ++j)
+                        float* result_ptr =
+                            result.data_.data() + result_row + jj;
+
+                        const float* other_ptr =
+                            other.data_.data() + other_row + jj;
+
+                        for (std::size_t j = 0; j < j_end - jj; ++j)
                         {
-                            result.data_[i * other.cols_ + j] += a * other.data_[k * other.cols_ + j];
+                            result_ptr[j] += a * other_ptr[j];
                         }
                     }
                 } 
