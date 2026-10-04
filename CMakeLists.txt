@@ -60,3 +60,9 @@ target_link_libraries(matrix_benchmark
     PRIVATE
         matrix
 )
+
+if (MSVC)
+    target_compile_options(matrix PRIVATE
+        /arch:AVX2
+    )
+endif()
