@@ -82,11 +82,12 @@ std::cout << size << "x" << size
 
 int main()
 {
-    constexpr int repetitions = 5;
+    constexpr int repetitions = 9;
 
     run_benchmark(64, repetitions);
     run_benchmark(128, repetitions);
     run_benchmark(256, repetitions);
     run_benchmark(512, repetitions);
+    run_benchmark(1024, repetitions);
 }
 

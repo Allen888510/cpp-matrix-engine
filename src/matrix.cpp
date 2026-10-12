@@ -1,7 +1,12 @@
 #include "matrix.hpp"
 
+#include <algorithm>
+#include <cstdint>
 #include <stdexcept>
-#include<algorithm>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 Matrix::Matrix(std::size_t rows, std::size_t cols)
     : rows_(rows),
@@ -107,43 +112,52 @@ Matrix Matrix::operator*(const Matrix& other) const
 
     Matrix result(rows_, other.cols_);
 
-    for (std::size_t ii = 0; ii < rows_; ii += BLOCK_SIZE)
+    const std::size_t num_i_blocks =
+        rows_ / BLOCK_SIZE +
+        (rows_ % BLOCK_SIZE != 0);
+
+    #pragma omp parallel for schedule(static)
+    for (std::int64_t block = 0;
+        block < static_cast<std::int64_t>(num_i_blocks);
+        ++block)
     {
+        const std::size_t ii =
+            static_cast<std::size_t>(block) * BLOCK_SIZE;
+
         for (std::size_t kk = 0; kk < cols_; kk += BLOCK_SIZE)
-        {
-            for (std::size_t jj = 0; jj < other.cols_; jj += BLOCK_SIZE)
             {
-                const std::size_t i_end =
-                    std::min(ii + BLOCK_SIZE, rows_);
-
-                const std::size_t k_end =
-                    std::min(kk + BLOCK_SIZE, cols_);
-
-                const std::size_t j_end =
-                    std::min(jj + BLOCK_SIZE, other.cols_);
-                
-                for (std::size_t i = ii; i < i_end; ++i)
+                for (std::size_t jj = 0; jj < other.cols_; jj += BLOCK_SIZE)
                 {
-                    for (std::size_t k = kk; k < k_end; ++k)
+                    const std::size_t i_end =
+                        std::min(ii + BLOCK_SIZE, rows_);
+
+                    const std::size_t k_end =
+                        std::min(kk + BLOCK_SIZE, cols_);
+
+                    const std::size_t j_end =
+                        std::min(jj + BLOCK_SIZE, other.cols_);
+                    for (std::size_t i = ii; i < i_end; ++i)
                     {
-                        const float a = data_[i * cols_ + k];
-                        const std::size_t result_row = i * other.cols_;
-                        const std::size_t other_row = k * other.cols_;
-
-                        float* result_ptr =
-                            result.data_.data() + result_row + jj;
-
-                        const float* other_ptr =
-                            other.data_.data() + other_row + jj;
-
-                        for (std::size_t j = 0; j < j_end - jj; ++j)
+                        for (std::size_t k = kk; k < k_end; ++k)
                         {
-                            result_ptr[j] += a * other_ptr[j];
+                            const float a = data_[i * cols_ + k];
+                            const std::size_t result_row = i * other.cols_;
+                            const std::size_t other_row = k * other.cols_;
+
+                            float* result_ptr =
+                                result.data_.data() + result_row + jj;
+
+                            const float* other_ptr =
+                                other.data_.data() + other_row + jj;
+
+                            for (std::size_t j = 0; j < j_end - jj; ++j)
+                            {
+                                result_ptr[j] += a * other_ptr[j];
+                            }
                         }
                     }
-                } 
+                }
             }
-        }
     }
     return result;
 }
