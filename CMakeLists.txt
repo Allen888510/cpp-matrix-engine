@@ -66,3 +66,11 @@ if (MSVC)
         /arch:AVX2
     )
 endif()
+
+# Enable OpenMP for multithreaded GEMM
+find_package(OpenMP REQUIRED COMPONENTS CXX)
+
+target_link_libraries(matrix
+    PUBLIC
+        OpenMP::OpenMP_CXX
+)

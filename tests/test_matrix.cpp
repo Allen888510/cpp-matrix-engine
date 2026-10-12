@@ -279,3 +279,106 @@ TEST(MatrixTest, MatrixMultiplicationByIdentity)
     EXPECT_FLOAT_EQ(result(1, 1), 4.0f);
 }
 
+
+TEST(MatrixTest, OpenMPBlockedGEMMNonSquare)
+{
+    const std::size_t M = 300;
+    const std::size_t K = 137;
+    const std::size_t N = 259;
+
+    Matrix A(M, K);
+    Matrix B(K, N);
+
+    for (std::size_t i = 0; i < M; ++i)
+    {
+        for (std::size_t k = 0; k < K; ++k)
+        {
+            A(i, k) = 1.0f;
+        }
+    }
+
+    for (std::size_t k = 0; k < K; ++k)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            B(k, j) = 2.0f;
+        }
+    }
+
+    Matrix C = A * B;
+
+    ASSERT_EQ(C.rows(), M);
+    ASSERT_EQ(C.cols(), N);
+
+    for (std::size_t i = 0; i < M; ++i)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            EXPECT_FLOAT_EQ(C(i, j), 274.0f);
+        }
+    }
+}
+
+
+TEST(MatrixTest, OpenMPBlockedGEMMAgainstReference)
+{
+    constexpr std::size_t M = 257;
+    constexpr std::size_t K = 131;
+    constexpr std::size_t N = 135;
+
+    Matrix A(M, K);
+    Matrix B(K, N);
+
+    for (std::size_t i = 0; i < M; ++i)
+    {
+        for (std::size_t k = 0; k < K; ++k)
+        {
+            A(i, k) = static_cast<float>(
+                static_cast<int>((i + 3 * k) % 17) - 8
+            ) * 0.25f;
+        }
+    }
+
+    for (std::size_t k = 0; k < K; ++k)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            B(k, j) = static_cast<float>(
+                static_cast<int>((2 * k + j) % 19) - 9
+            ) * 0.125f;
+        }
+    }
+
+    Matrix expected(M, N);
+
+    // Reference GEMM: 簡單、容易驗證的 i-j-k 寫法
+    for (std::size_t i = 0; i < M; ++i)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            float sum = 0.0f;
+
+            for (std::size_t k = 0; k < K; ++k)
+            {
+                sum += A(i, k) * B(k, j);
+            }
+
+            expected(i, j) = sum;
+        }
+    }
+
+    // 你實際優化過的 OpenMP + Blocked GEMM
+    Matrix actual = A * B;
+
+    ASSERT_EQ(actual.rows(), M);
+    ASSERT_EQ(actual.cols(), N);
+
+    for (std::size_t i = 0; i < M; ++i)
+    {
+        for (std::size_t j = 0; j < N; ++j)
+        {
+            EXPECT_NEAR(actual(i, j), expected(i, j), 1e-3f)
+                << "Mismatch at (" << i << ", " << j << ")";
+        }
+    }
+}
