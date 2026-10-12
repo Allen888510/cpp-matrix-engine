@@ -4,10 +4,6 @@
 #include <cstdint>
 #include <stdexcept>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 Matrix::Matrix(std::size_t rows, std::size_t cols)
     : rows_(rows),
       cols_(cols),
@@ -125,7 +121,7 @@ Matrix Matrix::operator*(const Matrix& other) const
             static_cast<std::size_t>(block) * BLOCK_SIZE;
 
         for (std::size_t kk = 0; kk < cols_; kk += BLOCK_SIZE)
-            {
+        {
                 for (std::size_t jj = 0; jj < other.cols_; jj += BLOCK_SIZE)
                 {
                     const std::size_t i_end =
